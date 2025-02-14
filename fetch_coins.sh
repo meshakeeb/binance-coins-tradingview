@@ -5,8 +5,8 @@ SPOT_URL="https://api.binance.com/api/v3/exchangeInfo"
 FUTURES_URL="https://fapi.binance.com/fapi/v1/exchangeInfo"
 
 # Output files (TradingView format)
-SPOT_FILE="binance_spot_tv.txt"
-FUTURES_FILE="binance_futures_tv.txt"
+SPOT_FILE="binance_usdt_coins_spot.txt"
+FUTURES_FILE="binance_usdt_coins_futures.txt"
 
 # Function to fetch SPOT trading pairs
 fetch_spot() {
