@@ -11,13 +11,13 @@ FUTURES_FILE="binance_usdt_coins_futures.txt"
 # Function to fetch SPOT trading pairs
 fetch_spot() {
     echo "Fetching SPOT trading pairs..."
-    curl -s "$SPOT_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .status=="TRADING") | .symbol' | awk '{print "BINANCE:"$1}' > "$SPOT_FILE"
+    curl -s "$SPOT_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .status=="TRADING") | .symbol' | sort | awk '{print "BINANCE:"$1}' > "$SPOT_FILE"
 }
 
 # Function to fetch FUTURES trading pairs
 fetch_futures() {
     echo "Fetching FUTURES trading pairs..."
-    curl -s "$FUTURES_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' | sed 's/USDT$/USDTTPERP/' | awk '{print "BINANCE:"$1}' > "$FUTURES_FILE"
+    curl -s "$FUTURES_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' | sed 's/USDT$/USDT.P/' | sort | awk '{print "BINANCE:"$1}' > "$FUTURES_FILE"
 }
 
 # Execute functions
