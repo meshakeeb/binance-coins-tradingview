@@ -13,12 +13,13 @@ fetch_spot() {
     echo "Fetching SPOT trading pairs..."
     response=$(curl -s "$SPOT_URL")
 
-    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols')" == "null" ]; then
+    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols // empty')" == "" ]; then
         echo "⚠️ Failed to fetch SPOT trading pairs or no symbols returned."
+        echo "Raw response: $response"
         return 1
     fi
 
-    echo "$response" | jq -r '.symbols // [] | select(.[]; .quoteAsset=="USDT" and .status=="TRADING") | .symbol' \
+    echo "$response" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .status=="TRADING") | .symbol' \
         | sort \
         | awk '{print "BINANCE:"$1}' > "$SPOT_FILE"
 }
@@ -28,12 +29,13 @@ fetch_futures() {
     echo "Fetching FUTURES trading pairs..."
     response=$(curl -s "$FUTURES_URL")
 
-    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols')" == "null" ]; then
+    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols // empty')" == "" ]; then
         echo "⚠️ Failed to fetch FUTURES trading pairs or no symbols returned."
+        echo "Raw response: $response"
         return 1
     fi
 
-    echo "$response" | jq -r '.symbols // [] | select(.[]; .quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' \
+    echo "$response" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' \
         | sed 's/USDT$/USDT.P/' \
         | sort \
         | awk '{print "BINANCE:"$1}' > "$FUTURES_FILE"
