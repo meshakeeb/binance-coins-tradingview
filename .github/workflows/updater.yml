@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: "0 0 * * *"  # Runs every day at midnight UTC
 
+permissions:
+  contents: write  # This is crucial to allow pushing changes
+
 jobs:
   run-and-commit:
     runs-on: ubuntu-latest
@@ -15,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # Ensure the token is used for pushing
 
       - name: Run shell script
         run: |
