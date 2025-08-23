@@ -11,13 +11,32 @@ FUTURES_FILE="binance_usdt_coins_futures.txt"
 # Function to fetch SPOT trading pairs
 fetch_spot() {
     echo "Fetching SPOT trading pairs..."
-    curl -s "$SPOT_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .status=="TRADING") | .symbol' | sort | awk '{print "BINANCE:"$1}' > "$SPOT_FILE"
+    response=$(curl -s "$SPOT_URL")
+
+    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols')" == "null" ]; then
+        echo "⚠️ Failed to fetch SPOT trading pairs or no symbols returned."
+        return 1
+    fi
+
+    echo "$response" | jq -r '.symbols // [] | select(.[]; .quoteAsset=="USDT" and .status=="TRADING") | .symbol' \
+        | sort \
+        | awk '{print "BINANCE:"$1}' > "$SPOT_FILE"
 }
 
 # Function to fetch FUTURES trading pairs
 fetch_futures() {
     echo "Fetching FUTURES trading pairs..."
-    curl -s "$FUTURES_URL" | jq -r '.symbols[] | select(.quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' | sed 's/USDT$/USDT.P/' | sort | awk '{print "BINANCE:"$1}' > "$FUTURES_FILE"
+    response=$(curl -s "$FUTURES_URL")
+
+    if [ -z "$response" ] || [ "$(echo "$response" | jq '.symbols')" == "null" ]; then
+        echo "⚠️ Failed to fetch FUTURES trading pairs or no symbols returned."
+        return 1
+    fi
+
+    echo "$response" | jq -r '.symbols // [] | select(.[]; .quoteAsset=="USDT" and .contractType=="PERPETUAL") | .symbol' \
+        | sed 's/USDT$/USDT.P/' \
+        | sort \
+        | awk '{print "BINANCE:"$1}' > "$FUTURES_FILE"
 }
 
 # Execute functions
@@ -25,5 +44,5 @@ fetch_spot
 fetch_futures
 
 # Output summary
-echo "✅ Spot trading pairs saved to: $SPOT_FILE"
-echo "✅ Futures trading pairs saved to: $FUTURES_FILE"
+[ -f "$SPOT_FILE" ] && echo "✅ Spot trading pairs saved to: $SPOT_FILE"
+[ -f "$FUTURES_FILE" ] && echo "✅ Futures trading pairs saved to: $FUTURES_FILE"
