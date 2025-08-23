@@ -1,0 +1,27 @@
+name: Run Shell Script and Auto Commit Changes
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"  # Runs every day at midnight UTC
+
+jobs:
+  run-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run shell script
+        run: |
+          chmod +x fetch_coins.sh
+          ./fetch_coins.sh
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: Binance coins updated
