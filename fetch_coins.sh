@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Binance API Endpoints
-SPOT_URL="https://api.binance.com/api/v3/exchangeInfo"
-FUTURES_URL="https://fapi.binance.com/fapi/v1/exchangeInfo"
+SPOT_URL="https://api.scraperapi.com/?api_key=d743bbf53ec96daf87a53831deddf632&url=https%3A%2F%2Fapi.binance.com%2Fapi%2Fv3%2FexchangeInfo"
+FUTURES_URL="https://api.scraperapi.com/?api_key=d743bbf53ec96daf87a53831deddf632&url=https%3A%2F%2Ffapi.binance.com%2Ffapi%2Fv1%2FexchangeInfo"
 
 # Output files (TradingView format)
 SPOT_FILE="binance_usdt_coins_spot.txt"
