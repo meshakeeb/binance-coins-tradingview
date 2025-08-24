@@ -1,9 +1,6 @@
-name: Run Shell Script and Auto Commit Changes
+name: Binance coin fetcher
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"  # Runs every day at midnight UTC
